@@ -10,11 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@opentelemetry/core": "^0.18.0",
-    "@opentelemetry/node": "^0.18.0",
-    "@opentelemetry/plugin-express": "^0.13.1",
-    "@opentelemetry/plugin-http": "^0.18.0",
-    "@opentelemetry/plugin-https": "^0.18.0",
+    "@opentelemetry/core": "^0.14.0",
+    "@opentelemetry/exporter-zipkin": "^0.14.0",
+    "@opentelemetry/node": "^0.14.0",
+    "@opentelemetry/plugin-express": "^0.12.1",
+    "@opentelemetry/plugin-http": "^0.14.0",
+    "@opentelemetry/plugin-https": "^0.14.0",
+    "@opentelemetry/tracing": "^0.14.0",
     "axios": "^0.21.1",
     "express": "^4.17.1"
   },
