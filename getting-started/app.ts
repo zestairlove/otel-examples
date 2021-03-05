@@ -35,6 +35,16 @@ app.get('/backend', (req, res) => {
   res.send('Hello from the backend');
 });
 
+// app.get('/backend', async (req, res) => {
+//   await (() => {
+//     return new Promise(res => {
+//       setTimeout(res, 3000);
+//     });
+//   })();
+
+//   res.send('Hello from the backend');
+// });
+
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`);
 });

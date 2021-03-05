@@ -13,8 +13,8 @@ provider.register();
 provider.addSpanProcessor(
   new SimpleSpanProcessor(
     new ZipkinExporter({
-      serviceName: 'getting-started',
-      url: 'http://localhost:9411'
+      serviceName: 'getting-started'
+      //url: 'http://localhost:9411'
     })
   )
 );

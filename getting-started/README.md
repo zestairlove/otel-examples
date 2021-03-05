@@ -49,6 +49,8 @@ npm install \
 ts-node -r ./tracing.ts app.ts
 ```
 
+> typescript, ts-node가 global로 설치되어 있어야 한다.
+
 - Tracing 코드를 초기화하고 Application을 실행하면 Application이 trace를 생성하고 HTTP를 통해 전파한다.
 - [Trace Context](https://www.w3.org/TR/trace-context/) 헤더를 지원하는 계측된 서비스가 HTTP를 사용하여 Application을 호출하고, Application이 다른 Application을 HTTP를 사용하여 호출하면 Trace Context 헤더가 올바르게 전파된다.
 
@@ -72,19 +74,61 @@ provider.register();
 - traces를 export 하기위한 패키지 설치
 
 ```bash
-yarn add \
+npm install \
   @opentelemetry/tracing \
   @opentelemetry/exporter-zipkin
 
 # for jaeger
-# yarn add @opentelemetry/exporter-jaeger
+# npm install @opentelemetry/exporter-jaeger
 ```
 
 - tracing, exporter-zipkin의 initialize/register 코드 작성
 
-(WIP)
+```ts
+import { LogLevel } from '@opentelemetry/core';
+import { NodeTracerProvider } from '@opentelemetry/node';
 
----
+import { SimpleSpanProcessor } from '@opentelemetry/tracing';
+import { ZipkinExporter } from '@opentelemetry/exporter-zipkin';
+
+const provider: NodeTracerProvider = new NodeTracerProvider({
+  logLevel: LogLevel.ERROR
+});
+
+provider.register();
+
+provider.addSpanProcessor(
+  new SimpleSpanProcessor(
+    new ZipkinExporter({
+      serviceName: 'getting-started'
+    })
+  )
+);
+
+console.log('tracing initialized');
+```
+
+```bash
+ts-node -r ./tracing.ts app.ts
+```
+
+- tracer 를 초기화하고, Application이 실행된 상태에서,
+- Application에 HTTP 요청을 보내면(http://localhost:8080)
+- trace backend에 export된 trace를 확인할 수 있다.
+
+Note: Some spans appear to be duplicated, but they are not. This is because the sample application is both the client and the server for these requests. You see one span that is the client side request timing, and one span that is the server side request timing. Anywhere they don’t overlap is network time.
+
+- Note
+  - 일부 Span은 중복된 것 처럼 보이지만, 예제 Application이 클라이언트이자 서버역할을 하도록 작성되었기 때문.
+  - 클라이언트 측 요청 타이밍 인 스팬 하나와 서버 측 요청 타이밍 스팬 하나가 표시된다. 겹치지 않는 곳은 네트워크 시간이다.
+
+## Collect Metrics Using OpenTelemetry
+
+This guide assumes you are going to be using Prometheus as your metrics backend. It is currently the only metrics backend supported by OpenTelemetry JS.(2020.10.1)
+
+Note: This section is a work in progress
+
+(WIP)
 
 ## Referrence
 
