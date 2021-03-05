@@ -1,9 +1,11 @@
 import * as express from 'express';
 import axios from 'axios';
+import { countAllRequests } from './monitoring';
 
 const PORT: string = process.env.PORT || '8080';
 
 const app = express();
+app.use(countAllRequests());
 
 app.get('/', (req, res) => {
   axios

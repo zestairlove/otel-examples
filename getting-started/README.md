@@ -128,7 +128,123 @@ This guide assumes you are going to be using Prometheus as your metrics backend.
 
 Note: This section is a work in progress
 
-(WIP)
+**prometheus setup**
+
+```yml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'opentelemetry'
+    static_configs:
+      - targets:
+          - host.docker.internal:9464
+```
+
+### Monitor Your NodeJS Application
+
+[monitored-example at main · open-telemetry/opentelemetry-js](https://github.com/open-telemetry/opentelemetry-js/tree/main/getting-started/ts-example/monitored-example)
+
+1. Install the required OpenTelemetry metrics libraries
+1. Initialize a meter and collect metrics
+1. Initialize and register a metrics exporter
+
+#### 1. Install the required OpenTelemetry metrics libraries
+
+To create metrics on NodeJS, you will need @opentelemetry/metrics.
+
+```bash
+npm install @opentelemetry/metrics
+```
+
+#### 2. Initialize a meter and collect metrics
+
+- 메트릭을 만들고 모니터링 하려면 `Meter` 가 필요하다.
+- OpenTelemetry에서 `Meter`는 메트릭, 레이블 및 메트릭 expoter를 만들고 관리하는 데 사용되는 메커니즘이다.
+
+**monitoring.ts 작성**
+
+```js
+import { MeterProvider } from '@opentelemetry/metrics';
+
+const meter = new MeterProvider().getMeter('your-meter-name');
+```
+
+- Application에서 이 파일을 가져와서 Meter를 사용하여 메트릭을 만들고 관리할 수 있다.
+- 간단한 카운터 메트릭을 만든다.
+- express에서 route별 요청을 count하는 middleware function을 만들어 export한다.
+
+```js
+import { Request, Response, NextFunction } from 'express';
+// ...
+
+const requestCount = meter.createCounter('request', {
+  description: 'Count all incoming requests.'
+});
+
+const handles = new Map();
+
+export const countAllRequests = () => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    if (!handles.has(req.path)) {
+      const labels = { routes: req.path };
+      const handle = requestCount.bind(labels);
+      handles.set(req.path, handle);
+    }
+
+    handles.get(req.path).add(1);
+    next();
+  };
+};
+```
+
+Application에서 작성한 미들웨어 함수를 등록한다.
+
+```js
+import { countAllReqeusts } from './monitoring';
+const app = express();
+app.use(countAllRequests());
+```
+
+이제 서비스가 요청을 받으면, meter가 요청을 카운트 한다.
+
+#### 3. Initialize and register a metrics exporter
+
+- 만든 메트릭을 볼 수 있도록 prometheus를 사용한다.
+- prometheus exporter를 설치하고 초기화 및 등록 코드를 작성한다.
+
+```bash
+npm install @opentelemetry/exporter-prometheus
+```
+
+```js
+// ...
+import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
+
+const prometheusPort = PrometheusExporter.DEFAULT_OPTIONS.port;
+const prometheusEndpoint = PrometheusExporter.DEFAULT_OPTIONS.endpoint;
+
+const exporter = new PrometheusExporter(
+  {
+    //startServer: true
+  },
+  () => {
+    console.log(
+      `prometheus scrape endpoint: http://localhost:${prometheusPort}${prometheusEndpoint}`
+    );
+  }
+);
+
+const meter = new MeterProvider({
+  exporter,
+  interval: 1500
+}).getMeter('your-meter-name');
+
+// ...
+```
+
+- prometheus 를 실행하고, Application을 실행하면
+- http://localhost:9464/metrics 에 메트릭이 게시되고, prometheus가 이를 수집한다.
 
 ## Referrence
 
