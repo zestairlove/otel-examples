@@ -49,8 +49,6 @@ npm install \
 ts-node -r ./tracing.ts app.ts
 ```
 
-> typescript, ts-node가 global로 설치되어 있어야 한다.
-
 - Tracing 코드를 초기화하고 Application을 실행하면 Application이 trace를 생성하고 HTTP를 통해 전파한다.
 - [Trace Context](https://www.w3.org/TR/trace-context/) 헤더를 지원하는 계측된 서비스가 HTTP를 사용하여 Application을 호출하고, Application이 다른 Application을 HTTP를 사용하여 호출하면 Trace Context 헤더가 올바르게 전파된다.
 
