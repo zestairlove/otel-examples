@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  collector:
+    image: otelcol:latest
+    command: ["--config=/conf/collector-config.yml", "--log-level=DEBUG"]
+    volumes:
+      - ./collector-config.yml:/conf/collector-config.yml
+    ports:
+      - "55678:55678"
+    depends_on:
+      - zipkin-all-in-one
+
+  zipkin-all-in-one:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
