@@ -6,6 +6,22 @@
 
 ![otel-layer](https://p135.p2.n0.cdn.getcloudapp.com/items/NQuJ06yy/12956ec7-a377-43fc-b884-759d58b7435c.png?source=viewer&v=cb7cd1af952ab345bce64178be960f8b)
 
+**Otel Layer in js**
+
+- API
+  - Core(Semantic Conversions) / API
+- SDK
+  - node: server application, automatic
+  - web: web application, automatic
+  - tracing: server/web, manually
+  - metric
+  - exporter: otel exporter
+- Collector
+  - 여러 vendor의 데이터를 수신하고 처리 및 내보내는 pipeline 제공
+  - zipkin, jaeger, prometheus, otlp
+- Plugins
+  - node(server)/node의 core, 각 벤더별(express, redis, mysql)로 tracing을 자동화로 수집할 수 있는 plugin 제공
+
 ## Otel JS Packages
 
 ### API
