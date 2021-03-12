@@ -7,12 +7,17 @@ const {
   SimpleSpanProcessor
 } = require('@opentelemetry/tracing');
 const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
+const { ZipkinExporter } = require('@opentelemetry/exporter-zipkin');
 
 const provider = new BasicTracerProvider();
 
 // Configure span processor to send spans th the expoter
-const expoter = new JaegerExporter({ serviceName: 'basic-service' });
-provider.addSpanProcessor(new SimpleSpanProcessor(expter));
+const jaegerExporter = new JaegerExporter({ serviceName: 'basic-service' });
+provider.addSpanProcessor(new SimpleSpanProcessor(jaegerExporter));
+
+const zipkinExporter = new ZipkinExporter({ serviceName: 'basic-service' });
+provider.addSpanProcessor(new SimpleSpanProcessor(zipkinExporter));
+
 provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
 
 /**
@@ -36,7 +41,8 @@ for (let i = 0; i < 10; i += 1) {
 parentSpan.end();
 
 // flush and close the connection.
-JaegerExporter.shutdown();
+jaegerExporter.shutdown();
+zipkinExporter.shutdown();
 
 function doWork(parent) {
   // Start another span. In this example, the main method already started a

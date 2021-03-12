@@ -1,1 +1,1 @@
-https://github.com/open-telemetry/opentelemetry-collector/tree/main/cmd/otelcol
+https://github.com/open-telemetry/opentelemetry-js/tree/main/examples/basic-tracer-node

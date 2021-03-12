@@ -1,0 +1,25 @@
+{
+  "name": "example-collector-exporter-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:tracing": "node tracing.js",
+    "start:metrics": "node metrics.js",
+    "docker:start": "cd ./docker && docker-compose down && docker-compose up",
+    "docker:startd": "cd ./docker && docker-compose down && docker-compose up -d",
+    "docker:stop": "cd ./docker && docker-compose down"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@opentelemetry/api": "^0.18.0",
+    "@opentelemetry/core": "^0.18.0",
+    "@opentelemetry/exporter-collector": "^0.18.0",
+    "@opentelemetry/exporter-collector-grpc": "^0.18.0",
+    "@opentelemetry/exporter-collector-proto": "^0.18.0",
+    "@opentelemetry/metrics": "^0.18.0",
+    "@opentelemetry/tracing": "^0.18.0"
+  }
+}
