@@ -84,10 +84,64 @@ Objectives:
 
 ### Trace Context
 
-[Trace Context](https://www.w3.org/TR/trace-context/)
+#### W3C Trace Context
+
+[W3C Trace Context Level 1](https://www.w3.org/TR/trace-context/)
+[W3C Trace Context Level 2](https://w3c.github.io/trace-context/)
 
 - This specification defines standard HTTP headers and a value format to propagate context information that enables distributed tracing scenarios. The specification standardizes how context information is sent and modified between services. Context information uniquely identifies individual requests in a distributed system and also defines a means to add and propagate provider-specific context information.
-- 이 사양은 표준 HTTP 헤더와 값 형식을 정의하여 분산 추적 시나리오를 사용하는 컨텍스트 정보를 전파한다. 사양은 컨텍스트 정보가 서비스간에 전송되고 수정되는 방법을 표준화한다. 컨텍스트 정보는 분산 시스템에서 개별 요청을 고유하게 식별하고 공급자 별 컨텍스트 정보를 추가하고 전파하는 수단을 정의한다.
+- 이 사양은 표준 HTTP 헤더와 값 형식을 정의하여 분산 트레이싱 시나리오를 사용하는 컨텍스트 정보를 전파한다. 사양은 컨텍스트 정보가 서비스간에 전송되고 수정되는 방법을 표준화한다. 컨텍스트 정보는 분산 시스템에서 개별 요청을 고유하게 식별하고 공급자 별 컨텍스트 정보를 추가하고 전파하는 수단을 정의한다.
+
+- **w3c/trace-context's Goal**
+
+  - This specification defines formats to pass trace context information across systems. Our goal is to share this with the community so that various tracing and diagnostics products can operate together.
+  - 이 사양은 시스템 전체에서 추적 컨텍스트 정보를 전달하는 형식을 정의합니다. 우리의 목표는 다양한 트레이스 및 진단 제품이 함께 작동 할 수 있도록 커뮤니티와 공유하는 것입니다.
+
+#### lightstep Otel: Context Propagation
+
+[OpenTelemetry | Core Concepts: Context Propagation](https://opentelemetry.lightstep.com/core-concepts/context-propagation/)
+
+서비스 경계를 넘어 이벤트를 연관시키는 기능은 분산 트레이싱의 기본 개념 중 하나이다. 이러한 기능을 구현하려면 분산 트레이싱 시스템의 구성 요소가 컨텍스트라고 하는 메타 데이터를 수집, 저장 및 전송할 수 있어야 한다. 컨텍스트는 현재 스팬 및 트레이스를 식별하는 정보를 가지고 있으며, 임의의 correlation을 키 값 쌍으로 포함 할 수 있다. Propagation은 종종 HTTP 헤더를 통해 컨텍스트가 서비스 안팎으로 번들되고 전송되는 수단이다.
+
+- context: 메타데이터, can be passed between functions in process or between processes over an RPC
+- 분산 트레이싱 시스템의 구성 요소는 컨텍스트라고 하는 메타 데이터를 수집, 저장 및 전송할 수 있어야 한다.
+- propagation: 전송 수단, 일반적으로 HTTP 헤더를 통해 전송
+
+![high-level look at the context propagation architecture in OpenTelemetry](https://images.ctfassets.net/8057oncvx5dp/10uTsHhW4wGt1PboFEglMk/4cdfcf9060a94c4bdca2aaa8eb6701e4/be42171b9a1dfc6e0796f49c23a6e7a6.jpg)
+
+##### Context
+
+- traces는 span들로 구성되며 span은 context(메타데이터)를 가지고 있다.
+- context는 span context, correlation context 두가지 타입이 있다.
+- baggage context => correlation context: 이전 버전과의 호환성
+  - https://github.com/w3c/distributed-tracing-wg/issues/42
+- Span Context: 스팬 컨텍스트는 서비스 경계에서 트레이스 정보를 이동하는 데 필요한 데이터를 나타냅니다.
+  - traceID: trace identifier
+  - spanID: span identifier
+  - traceFlags: trace options
+  - traceState: trace state
+- Correlation Context: Correlation 컨텍스트는 사용자가 정의한 속성을 전달한다.
+  - identifier
+  - analysis
+
+##### Propagation
+
+Propagation은 서비스와 프로세스 간의 컨텍스트의 이동을 가능케하는 메커니즘이다.
+
+OpenTelemetry가 인식하는 propagation에 관한 몇 가지 프로토콜이 있다.
+
+- [W3C Trace-Context HTTP Propagator](https://w3c.github.io/trace-context/)
+- W3C Correlation-Context HTTP Propagator
+  - [W3C Baggage-Context HTTP Propagator](https://w3c.github.io/baggage/)
+- [B3 Zipkin HTTP Propagator](https://github.com/openzipkin/b3-propagation)
+
+#### Trace Context Reference
+
+- [OpenTelemetry | Core Concepts](https://opentelemetry.lightstep.com/core-concepts/context-propagation/)
+- [w3c/trace-context: Trace Context](https://github.com/w3c/trace-context)
+- [w3c/distributed-tracing-wg: Distributed Tracing Working Group](https://github.com/w3c/distributed-tracing-wg)
+- [opentelemetry-specification/specification at main · open-telemetry/opentelemetry-specification](https://github.com/open-telemetry/opentelemetry-specification/tree/main/specification)
+- [opentelemetry-specification/api-propagators.md at main · open-telemetry/opentelemetry-specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/api-propagators.md)
 
 ### B3 Propagation
 
